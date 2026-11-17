@@ -1,0 +1,13 @@
+TaskFlow has been deployed!
+
+1. Get the application URL by running these commands:
+{{- if .Values.ingress.enabled }}
+  http://{{ .Values.ingress.host }}
+{{- else if contains "NodePort" .Values.frontend.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "taskflow.fullname" . }}-frontend)
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+{{- else }}
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "taskflow.fullname" . }}-frontend 8080:{{ .Values.frontend.service.port }}
+  echo "Visit http://127.0.0.1:8080"
+{{- end }}

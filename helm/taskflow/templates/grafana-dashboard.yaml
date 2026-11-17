@@ -1,0 +1,47 @@
+{{- if .Values.monitoring.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "taskflow.fullname" . }}-grafana-dashboard
+  labels:
+    {{- include "taskflow.labels" . | nindent 4 }}
+    grafana_dashboard: "1"
+data:
+  taskflow-dashboard.json: |
+    {
+      "title": "TaskFlow Observability",
+      "uid": "taskflow-observability",
+      "schemaVersion": 39,
+      "version": 1,
+      "panels": [
+        {
+          "id": 1,
+          "type": "timeseries",
+          "title": "Requests per second",
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+          "targets": [{ "expr": "sum(rate(http_requests_total[1m]))", "refId": "A" }]
+        },
+        {
+          "id": 2,
+          "type": "timeseries",
+          "title": "5xx Error Ratio",
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+          "targets": [{ "expr": "sum(rate(http_requests_total{status=~\"5..\"}[1m])) / sum(rate(http_requests_total[1m]))", "refId": "A" }]
+        },
+        {
+          "id": 3,
+          "type": "timeseries",
+          "title": "p95 Latency (s)",
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+          "targets": [{ "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[1m])) by (le))", "refId": "A" }]
+        },
+        {
+          "id": 4,
+          "type": "timeseries",
+          "title": "Pod CPU Usage",
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+          "targets": [{ "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"taskflow\"}[1m])) by (pod)", "refId": "A" }]
+        }
+      ]
+    }
+{{- end }}

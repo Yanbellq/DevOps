@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "taskflow.fullname" . }}-config
+  labels:
+    {{- include "taskflow.labels" . | nindent 4 }}
+data:
+  PORT: {{ .Values.config.port | quote }}
+  DB_HOST: {{ include "taskflow.fullname" . }}-postgres
+  DB_PORT: {{ .Values.config.dbPort | quote }}
+  DB_NAME: {{ .Values.config.dbName | quote }}
+  DB_SYNCHRONIZE: {{ .Values.config.dbSynchronize | quote }}
+  CORS_ORIGIN: {{ .Values.config.corsOrigin | quote }}

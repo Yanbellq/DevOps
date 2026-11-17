@@ -1,0 +1,34 @@
+backend:
+  replicaCount: 3
+  image:
+    tag: '1.1.0'
+  resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    limits:
+      cpu: 1000m
+      memory: 512Mi
+
+frontend:
+  replicaCount: 3
+  image:
+    tag: '1.1.0'
+  service:
+    type: ClusterIP
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 300m
+      memory: 256Mi
+
+config:
+  dbSynchronize: 'false'
+  corsOrigin: 'https://taskflow.example.com'
+
+ingress:
+  enabled: true
+  className: nginx
+  host: taskflow.example.com

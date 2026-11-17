@@ -1,0 +1,22 @@
+{{- if and .Values.rollout.enabled .Values.rollout.analysis.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: {{ include "taskflow.fullname" . }}-success-rate
+  labels:
+    {{- include "taskflow.labels" . | nindent 4 }}
+spec:
+  metrics:
+    - name: success-rate
+      interval: 15s
+      count: 3
+      failureLimit: 1
+      successCondition: result[0] >= 0.95
+      provider:
+        prometheus:
+          address: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090
+          query: |
+            sum(rate(http_requests_total{status!~"5.."}[1m]))
+            /
+            sum(rate(http_requests_total[1m]))
+{{- end }}

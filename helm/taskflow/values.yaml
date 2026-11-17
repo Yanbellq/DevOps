@@ -1,0 +1,80 @@
+backend:
+  replicaCount: 2
+  image:
+    repository: taskflow-backend
+    tag: '1.0.0'
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 3000
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+frontend:
+  replicaCount: 2
+  image:
+    repository: taskflow-frontend
+    tag: '1.0.0'
+    pullPolicy: IfNotPresent
+  service:
+    type: NodePort
+    port: 80
+    nodePort: 30080
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+
+postgres:
+  image:
+    repository: postgres
+    tag: '17-alpine'
+    pullPolicy: IfNotPresent
+  service:
+    port: 5432
+  persistence:
+    enabled: true
+    size: 1Gi
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+config:
+  port: '3000'
+  dbPort: '5432'
+  dbName: 'taskflow'
+  dbSynchronize: 'true'
+  corsOrigin: 'http://localhost:30080'
+  appVersion: '1.0.0'
+  failRate: '0'
+
+rollout:
+  enabled: false
+  replicaCount: 4
+  analysis:
+    enabled: false
+
+monitoring:
+  enabled: false
+  interval: 15s
+
+secret:
+  dbUser: 'postgres'
+  dbPassword: 'taskflow-dev-password'
+
+ingress:
+  enabled: false
+  className: nginx
+  host: taskflow.local
