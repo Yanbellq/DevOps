@@ -1,0 +1,29 @@
+backend:
+  replicaCount: 1
+  image:
+    repository: ghcr.io/yanbellq/devops-backend
+    tag: sha-0f0d952c0904c94994f85da4fa2dcee6fcea0462
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 50m
+      memory: 96Mi
+    limits:
+      cpu: 250m
+      memory: 192Mi
+
+frontend:
+  replicaCount: 1
+  image:
+    repository: ghcr.io/yanbellq/devops-frontend
+    tag: sha-0f0d952c0904c94994f85da4fa2dcee6fcea0462
+    pullPolicy: IfNotPresent
+  service:
+    type: NodePort
+    nodePort: 30080
+
+config:
+  appVersion: "1.0.0"
+
+ingress:
+  enabled: false

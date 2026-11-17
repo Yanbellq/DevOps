@@ -8,13 +8,13 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/YOUR_GITHUB_USER/devops-taskflow.git
+    repoURL: https://github.com/Yanbellq/DevOps.git
     targetRevision: HEAD
     path: helm/taskflow
     helm:
       valueFiles:
         - values.yaml
-        - values-dev.yaml
+        - values-minikube.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: taskflow
