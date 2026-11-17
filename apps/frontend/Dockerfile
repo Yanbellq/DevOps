@@ -12,7 +12,9 @@ COPY apps/frontend ./apps/frontend
 
 RUN bun run --cwd apps/frontend build
 
-FROM nginx:1.27-alpine AS runner
+FROM nginx:alpine AS runner
+
+RUN apk upgrade --no-cache
 
 COPY apps/frontend/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/apps/frontend/dist /usr/share/nginx/html
